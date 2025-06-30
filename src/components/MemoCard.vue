@@ -1,28 +1,20 @@
 <script setup>
-import httpService from '@/services/HttpService';
+
 const props = defineProps({
   item: Object,
+  deleteItem: Function,
 });
-
-const remove = async () => {
-    if (confirm('삭제하시겠습니까?')){
-        console.log("삭제하겠다.");
-        const params = {memo_id: props.item.id};
-        const data = httpService.deleteMemo( params );
-    } 
-    // console.log("id:", props.item.id);
-};
 
 </script>
 
 <template>
-  <router-link :to="`/memos/${props.item.id}`" class="item" :key="props.item.id">
+  <router-link :to="`/mod/${props.item.id}`" class="item" :key="props.item.id">
     <div class="d-flex pt-3">
       <div class="pb-3 mb-0 w-100">
         <div class="d-flex justify-content-between">
           <b>{{ props.item.title }}</b>
           <div>
-            <span role="button" @click.prevent="remove(props.item.id)">삭제</span>
+            <span role="button" @click.prevent="$emit('deleteItem', props.item.id)">삭제</span>
           </div>
         </div>
       </div>
