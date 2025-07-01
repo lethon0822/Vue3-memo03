@@ -23,7 +23,7 @@ class HttpService {
   async findById(id) {
     console.log('findById - id: ', id);
     const res = await axios.get(`/memo/${id}`);
-    console.log('res.data ', res.data);
+    console.log('res.data', res.data)
     return res.data;
   }
 

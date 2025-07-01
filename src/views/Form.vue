@@ -19,36 +19,9 @@ const state = reactive({
 });
 
 const submit = async () => {
+
   // 제목에 내용이 없다면 alert('제목을 작성해주세요.')
   // 내용에 내용이 없다면 alert('내용을 작성해주세요.')
-  if (route.params.memoId) {
-    // 수정 처리
-
-    return;
-  }
-
-  const bodyJSON = {
-    title: state.memo.title,
-    ctnts: state.memo.ctnts,
-  };
-
-  const data = await httpService.save(bodyJSON);
-
-  console.log('글등록: ', data.resultMessage);
-  if (data.resultData === 1) {
-    // 등록 성공
-    // 홈 화면으로 라우터 처리
-    alert('등록되었습니다.');
-    router.push({ path: '/' });
-  } else {
-    // 등록 실패
-    alert(data.resultMessage);
-  }
-
-  // 등록 처리
-
-
-
   if (state.memo.title.trim().length === 0) {
     alert('제목을 작성해주세요.');
     refTitle.value.focus();
@@ -66,19 +39,43 @@ const submit = async () => {
     refCtnts.value.focus();
     return;
   }
+
+  console.log('submit 호출');
+  let data = null;
+  const bodyJSON = {
+    title: state.memo.title,
+    ctnts: state.memo.ctnts,
+  };
+
+  if (route.params.memoId) {
+    // 수정 처리
+    bodyJSON.memoId = state.memo.memoId;
+    data = await httpService.modify(state.memo);
+  } else {
+    // 등록 처리
+    data = await httpService.save(bodyJSON);
+  }
+
+  if (data.resultData === 1) {
+    // 등록이나 수정 성공시
+    // 홈 화면으로 라우터 처리
+    router.push({ path: '/' });
+  } else {
+    // 등록 실패
+    alert(data.resultMessage);
+  }
 };
+
 const findById = async () => {
-    const data = await httpService.findById(route.params.memoId);
-    state.memo = data.resultData;
+  const data = await httpService.findById(route.params.memoId);
+  state.memo = data.resultData;
 };
 
-onMounted(()=> {
-    if (route.params.memoId){
-        findById();
-    }
-})
-
-
+onMounted(() => {
+  if (route.params.memoId) {
+    findById();
+  }
+});
 </script>
 
 <template>
